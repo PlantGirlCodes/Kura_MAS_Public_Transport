@@ -1,4 +1,4 @@
-A simple multi-agent AI system for intelligent directions.
+#A simple multi-agent AI system for intelligent directions.
 
 ## Setup
 
