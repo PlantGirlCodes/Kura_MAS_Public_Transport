@@ -87,3 +87,21 @@ def setup_github_repo():
 
 if __name__ == "__main__":
     setup_github_repo()
+
+
+# Usage in main.py:
+"""
+# Add budget tracking to your main system
+budget_tracker = BudgetTracker()
+
+# In your DirectionAgent.__init__:
+def get_directions(self, user_query: str) -> Dict[str, Any]:
+    # Track the request
+    budget_tracker.track_request("openai")
+    # ... rest of the method
+
+# Add budget endpoint to FastAPI:
+@app.get("/budget")
+async def get_budget_status():
+    return budget_tracker.get_budget_status()
+"""
