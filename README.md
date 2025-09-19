@@ -26,7 +26,7 @@ Our system uses 5 specialized agents:
 ### 2. Setup
 ```bash
 # Clone your repository
-git clone your-repo-url
+git clone https://github.com/PlantGirlCodes/Kura_MAS_Public_Transport.git
 cd your-repo-name
 
 # Install dependencies
