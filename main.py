@@ -283,7 +283,8 @@ class LocationAgent:
 
         try:
             log_api_call("IP Geolocation")
-            location_result = get_user_location.invoke({})
+            tool = self.tools[0]  # get_user_location
+            location_result = tool.invoke({})
             state.location_data = location_result
             state.add_message(
                 MessageType.LOCATION_UPDATE,
@@ -318,7 +319,7 @@ class WeatherAgent:
         try:
             lat = state.location_data["latitude"]
             lon = state.location_data["longitude"]
-            weather_result = get_weather_conditions(lat, lon)
+            weather_result = self.tools[0].invoke({"lat": lat, "lon": lon})
             state.weather_data = weather_result
             state.add_message(
                 MessageType.WEATHER_UPDATE,
@@ -349,7 +350,7 @@ class TrafficAgent:
             origin, destination = self.parse_locations(state.user_query, state.location_data)
             print(f"🚗 Traffic Agent: From {origin} to {destination}")
             
-            traffic_result = get_traffic_conditions(origin, destination)
+            traffic_result = self.tools[0].invoke({"origin": origin, "destination": destination})
             state.traffic_data = traffic_result
             
             if "error" not in traffic_result:
@@ -407,7 +408,7 @@ class RouteAgent:
             traffic_agent = TrafficAgent()
             origin, destination = traffic_agent.parse_locations(state.user_query, state.location_data)
             
-            route_options = calculate_route_options(origin, destination)
+            route_options = self.tools[0].invoke({"origin": origin, "destination": destination})
             state.route_options = route_options
             
             if route_options and "error" not in route_options[0]:
