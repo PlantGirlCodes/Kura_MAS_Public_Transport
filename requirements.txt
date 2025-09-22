@@ -2,9 +2,9 @@
 flask
 requests
 twilio
-langchain-openai
-langgraph>=0.2.0
+langchain-openai==0.2.7
+langgraph==0.2.45
 fastapi
 uvicorn
 python-dotenv
-pydantic
+pydantic==2.8.2
