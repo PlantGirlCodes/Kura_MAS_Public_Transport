@@ -23,6 +23,12 @@ from langgraph.prebuilt import ToolExecutor
 from dotenv import load_dotenv
 load_dotenv()
 
+# Simple logging
+from simple_logging import (
+    log_message, log_error, log_success, log_agent_start, log_agent_complete,
+    log_api_call, SimpleMetrics, get_simple_stats
+)
+
 # =============================================================================
 # CONFIGURATION & SETUP
 # =============================================================================
@@ -147,8 +153,9 @@ def get_traffic_conditions(origin: str, destination: str) -> Dict[str, Any]:
         params = {
             "origin": origin,
             "destination": destination,
+            "mode": "transit",  # PUBLIC TRANSPORT MODE!
             "departure_time": "now",
-            "traffic_model": "best_guess",
+            "transit_mode": "bus|subway|train",
             "key": api_key
         }
         
@@ -191,8 +198,10 @@ def calculate_route_options(origin: str, destination: str) -> List[Dict[str, Any
         params = {
             "origin": origin,
             "destination": destination,
+            "mode": "transit",  # PUBLIC TRANSPORT MODE!
             "alternatives": "true",
             "departure_time": "now",
+            "transit_mode": "bus|subway|train",
             "key": api_key
         }
         
@@ -264,15 +273,16 @@ class SupervisorAgent:
 
 class LocationAgent:
     """Location Agent - Finds user's location"""
-    
+
     def __init__(self):
         self.name = "location_agent"
         self.tools = [get_user_location]
-    
+
     def execute(self, state: AgentState) -> AgentState:
-        print("🗺️ Location Agent: Determining user location...")
-        
+        log_agent_start(self.name)
+
         try:
+            log_api_call("IP Geolocation")
             location_result = get_user_location()
             state.location_data = location_result
             state.add_message(
@@ -280,13 +290,13 @@ class LocationAgent:
                 f"Location found: {location_result.get('city', 'Unknown')}, {location_result.get('region', 'Unknown')}",
                 self.name
             )
-            print(f"✅ Location Agent: Found {location_result.get('city')}")
-            
+            log_agent_complete(self.name)
+
         except Exception as e:
             state.error_count += 1
             state.add_message(MessageType.LOCATION_UPDATE, f"Error: {str(e)}", self.name)
-            print(f"❌ Location Agent failed: {e}")
-        
+            log_error(f"Location Agent failed: {e}")
+
         return state
 
 class WeatherAgent:
@@ -568,25 +578,28 @@ class MultiAgentDirectionSystem:
     
     def process_request(self, user_query: str) -> Dict[str, Any]:
         """Process a direction request through the multi-agent system"""
-        print(f"\n🚀 Processing: '{user_query}'")
-        print("=" * 60)
-        
+        # Start metrics tracking
+        metrics = SimpleMetrics()
+        metrics.start_request(user_query)
+
         # Create initial state
         initial_state = AgentState(user_query=user_query)
         initial_state.add_message(MessageType.USER_REQUEST, user_query, "user")
-        
+
         start_time = datetime.now()
-        
+
         try:
             # Run the workflow
             final_state = self.workflow.invoke(initial_state)
-            
+
             # Calculate processing time
             processing_time = (datetime.now() - start_time).total_seconds()
-            
-            print("=" * 60)
-            print(f"✅ Completed in {processing_time:.2f} seconds")
-            
+
+            # Update metrics
+            metrics.finish_request(success=True)
+
+            log_success(f"Request completed in {processing_time:.2f} seconds")
+
             return {
                 "directions": final_state.final_directions,
                 "location": final_state.location_data,
@@ -598,11 +611,13 @@ class MultiAgentDirectionSystem:
                 "errors_encountered": final_state.error_count,
                 "conversation_log": final_state.messages
             }
-            
+
         except Exception as e:
             processing_time = (datetime.now() - start_time).total_seconds()
-            print(f"❌ System error after {processing_time:.2f} seconds: {e}")
-            
+            metrics.add_error()
+            metrics.finish_request(success=False)
+            log_error(f"System error after {processing_time:.2f} seconds: {e}")
+
             return {
                 "directions": f"I'm sorry, I encountered an error: {str(e)}. Please try again.",
                 "location": {},
@@ -687,10 +702,10 @@ async def test_system():
     """Test the system with sample queries"""
     test_queries = [
         "directions to Times Square",
-        "how do I get to Central Park", 
+        "how do I get to Central Park",
         "route to JFK airport"
     ]
-    
+
     results = {}
     for query in test_queries:
         try:
@@ -705,12 +720,17 @@ async def test_system():
                 "success": False,
                 "error": str(e)
             }
-    
+
     return {
         "system_status": "operational",
         "test_results": results,
         "timestamp": datetime.now().isoformat()
     }
+
+@app.get("/metrics")
+async def get_metrics():
+    """Get simple system metrics"""
+    return get_simple_stats()
 
 # =============================================================================
 # MAIN ENTRY POINT
