@@ -81,7 +81,7 @@ class AgentState:
 # TOOL FUNCTIONS (for agents to use)
 # =============================================================================
 
-@tool(name="get_user_location")
+@tool
 def get_user_location(ip_address: str = "8.8.8.8") -> Dict[str, Any]:
     """Get location from IP address - FREE SERVICE"""
     try:
@@ -112,7 +112,7 @@ def get_user_location(ip_address: str = "8.8.8.8") -> Dict[str, Any]:
             "source": "fallback"
         }
 
-@tool(name="get_weather_conditions")
+@tool
 def get_weather_conditions(lat: float, lon: float) -> Dict[str, Any]:
     """Get weather data - FREE TIER: 1000 calls/day"""
     api_key = os.getenv("WEATHER_API_KEY")
@@ -143,7 +143,7 @@ def get_weather_conditions(lat: float, lon: float) -> Dict[str, Any]:
             "source": "fallback"
         }
 
-@tool(name="get_traffic_conditions")
+@tool
 def get_traffic_conditions(origin: str, destination: str) -> Dict[str, Any]:
     """Get traffic conditions - FREE TIER: $200 monthly credit"""
     api_key = os.getenv("GOOGLE_MAPS_API_KEY")
@@ -188,7 +188,7 @@ def get_traffic_conditions(origin: str, destination: str) -> Dict[str, Any]:
             "source": "error"
         }
 
-@tool(name="calculate_route_options")
+@tool
 def calculate_route_options(origin: str, destination: str) -> List[Dict[str, Any]]:
     """Calculate multiple route options - FREE TIER: $200 monthly credit"""
     api_key = os.getenv("GOOGLE_MAPS_API_KEY")
