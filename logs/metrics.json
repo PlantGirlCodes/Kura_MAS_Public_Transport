@@ -1,0 +1,50 @@
+[
+  {
+    "timestamp": "2025-09-22T09:03:11.772939",
+    "processing_time": 0.11,
+    "agents_used": 0,
+    "api_calls": 0,
+    "errors": 0,
+    "success": true
+  },
+  {
+    "timestamp": "2025-09-22T09:03:11.773310",
+    "processing_time": 0.11,
+    "agents_used": 0,
+    "api_calls": 0,
+    "errors": 1,
+    "success": false
+  },
+  {
+    "timestamp": "2025-09-22T09:04:46.539291",
+    "processing_time": 0.02,
+    "agents_used": 0,
+    "api_calls": 0,
+    "errors": 0,
+    "success": true
+  },
+  {
+    "timestamp": "2025-09-22T09:04:46.541102",
+    "processing_time": 0.02,
+    "agents_used": 0,
+    "api_calls": 0,
+    "errors": 1,
+    "success": false
+  },
+  {
+    "timestamp": "2025-09-22T09:06:44.688411",
+    "processing_time": 0.02,
+    "agents_used": 0,
+    "api_calls": 0,
+    "errors": 0,
+    "success": true
+  },
+  {
+    "timestamp": "2025-09-22T09:06:44.689650",
+    "processing_time": 0.02,
+    "agents_used": 0,
+    "api_calls": 0,
+    "errors": 1,
+    "success": false
+  }
+]
