@@ -54,3 +54,92 @@
 [2025-09-22 09:48:09] SUCCESS: ✅ Request completed in 0.06 seconds
 [2025-09-22 09:48:09] INFO: 📈 Request completed in 0.06s | Agents: 0 | API calls: 0 | Errors: 1
 [2025-09-22 09:48:09] ERROR: ❌ System error after 0.06 seconds: 'AddableValuesDict' object has no attribute 'final_directions'
+[2025-09-22 09:52:13] INFO: 📊 Processing: where am I?
+[2025-09-22 09:52:13] INFO: 🤖 Starting location_agent
+[2025-09-22 09:52:13] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 09:52:13] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 09:52:13] INFO: 🤖 Starting location_agent
+[2025-09-22 09:52:13] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 09:52:13] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 09:52:13] INFO: 🤖 Starting location_agent
+[2025-09-22 09:52:13] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 09:52:13] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 09:52:13] INFO: 📈 Request completed in 0.08s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 09:52:13] SUCCESS: ✅ Request completed in 0.08 seconds
+[2025-09-22 09:52:13] INFO: 📈 Request completed in 0.08s | Agents: 0 | API calls: 0 | Errors: 1
+[2025-09-22 09:52:13] ERROR: ❌ System error after 0.08 seconds: 'AddableValuesDict' object has no attribute 'final_directions'
+[2025-09-22 09:57:07] INFO: 📊 Processing: where am I?
+[2025-09-22 09:57:07] INFO: 🤖 Starting location_agent
+[2025-09-22 09:57:07] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 09:57:07] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 09:57:07] INFO: 🤖 Starting location_agent
+[2025-09-22 09:57:07] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 09:57:07] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 09:57:07] INFO: 🤖 Starting location_agent
+[2025-09-22 09:57:07] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 09:57:07] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 09:57:07] INFO: 📈 Request completed in 0.08s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 09:57:07] SUCCESS: ✅ Request completed in 0.07 seconds
+[2025-09-22 09:57:07] INFO: 📈 Request completed in 0.08s | Agents: 0 | API calls: 0 | Errors: 1
+[2025-09-22 09:57:07] ERROR: ❌ System error after 0.07 seconds: 'AddableValuesDict' object has no attribute 'final_directions'
+[2025-09-22 10:08:53] INFO: 📊 Processing: where am I?
+[2025-09-22 10:08:53] INFO: 🤖 Starting location_agent
+[2025-09-22 10:08:53] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 10:08:53] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 10:08:53] INFO: 🤖 Starting location_agent
+[2025-09-22 10:08:53] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 10:08:53] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 10:08:53] INFO: 🤖 Starting location_agent
+[2025-09-22 10:08:53] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 10:08:53] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 10:08:53] INFO: 📈 Request completed in 0.07s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 10:08:53] SUCCESS: ✅ Request completed in 0.07 seconds
+[2025-09-22 10:08:53] INFO: 📈 Request completed in 0.08s | Agents: 0 | API calls: 0 | Errors: 1
+[2025-09-22 10:08:53] ERROR: ❌ System error after 0.08 seconds: 'AddableValuesDict' object has no attribute 'final_directions'
+[2025-09-22 10:14:48] INFO: 📊 Processing: where am I?
+[2025-09-22 10:14:48] INFO: 🤖 Starting location_agent
+[2025-09-22 10:14:48] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 10:14:48] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 10:14:48] INFO: 🤖 Starting location_agent
+[2025-09-22 10:14:48] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 10:14:48] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 10:14:48] INFO: 🤖 Starting location_agent
+[2025-09-22 10:14:48] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 10:14:48] ERROR: ❌ Location Agent failed: BaseTool.__call__() missing 1 required positional argument: 'tool_input'
+[2025-09-22 10:14:48] INFO: 📈 Request completed in 0.06s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 10:14:48] SUCCESS: ✅ Request completed in 0.06 seconds
+[2025-09-22 10:14:48] INFO: 📈 Request completed in 0.07s | Agents: 0 | API calls: 0 | Errors: 1
+[2025-09-22 10:14:48] ERROR: ❌ System error after 0.06 seconds: 'AddableValuesDict' object has no attribute 'final_directions'
+[2025-09-22 10:37:06] INFO: 📊 Processing: where am I?
+[2025-09-22 10:37:06] INFO: 🤖 Starting location_agent
+[2025-09-22 10:37:06] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 10:37:07] INFO: ✅ Completed location_agent
+[2025-09-22 10:37:10] INFO: 📈 Request completed in 3.77s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 10:37:10] SUCCESS: ✅ Request completed in 3.77 seconds
+[2025-09-22 10:37:10] INFO: 📈 Request completed in 3.77s | Agents: 0 | API calls: 0 | Errors: 1
+[2025-09-22 10:37:10] ERROR: ❌ System error after 3.77 seconds: 'AddableValuesDict' object has no attribute 'final_directions'
+[2025-09-22 10:53:53] INFO: 📊 Processing: where am I?
+[2025-09-22 10:53:53] INFO: 🤖 Starting location_agent
+[2025-09-22 10:53:53] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 10:53:53] INFO: ✅ Completed location_agent
+[2025-09-22 10:53:56] INFO: 📈 Request completed in 2.71s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 10:53:56] SUCCESS: ✅ Request completed in 2.71 seconds
+[2025-09-22 10:53:56] INFO: 📈 Request completed in 2.72s | Agents: 0 | API calls: 0 | Errors: 1
+[2025-09-22 10:53:56] ERROR: ❌ System error after 2.71 seconds: 'AddableValuesDict' object has no attribute 'final_directions'
+[2025-09-22 11:03:28] INFO: 📊 Processing: where am I?
+[2025-09-22 11:03:28] INFO: 🤖 Starting location_agent
+[2025-09-22 11:03:28] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 11:03:28] INFO: ✅ Completed location_agent
+[2025-09-22 11:03:28] INFO: 📈 Request completed in 0.35s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 11:03:28] SUCCESS: ✅ Request completed in 0.35 seconds
+[2025-09-22 11:03:28] INFO: 📈 Request completed in 0.36s | Agents: 0 | API calls: 0 | Errors: 1
+[2025-09-22 11:03:28] ERROR: ❌ System error after 0.35 seconds: 'AddableValuesDict' object has no attribute 'final_directions'
+[2025-09-22 11:15:24] INFO: 📊 Processing: where am I?
+[2025-09-22 11:15:24] INFO: 🤖 Starting location_agent
+[2025-09-22 11:15:24] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 11:15:24] INFO: ✅ Completed location_agent
+[2025-09-22 11:15:24] INFO: 📈 Request completed in 0.34s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 11:15:24] SUCCESS: ✅ Request completed in 0.33 seconds
+[2025-09-22 11:15:24] INFO: 📈 Request completed in 0.34s | Agents: 0 | API calls: 0 | Errors: 1
+[2025-09-22 11:15:24] ERROR: ❌ System error after 0.34 seconds: 'AddableValuesDict' object has no attribute 'final_directions'
+[2025-09-22 11:41:26] INFO: 📊 Processing: where am I?
