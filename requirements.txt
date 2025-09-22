@@ -1,10 +1,21 @@
-# requirements.txt
-flask
-requests
-twilio
-langchain-openai==0.2.7
-langgraph==0.2.45
+# Transport Multi-Agent System Requirements
+# Core web framework
 fastapi
 uvicorn
+pydantic
+
+# LangChain & LangGraph (compatible versions)
+langchain-openai==0.2.7
+langgraph==0.2.45
+langchain-core>=0.3.16
+
+# Environment & utilities
 python-dotenv
-pydantic==2.8.2
+requests
+
+# Optional integrations
+flask
+twilio
+
+# For better error handling
+httpx
