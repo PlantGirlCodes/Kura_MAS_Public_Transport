@@ -283,7 +283,7 @@ class LocationAgent:
 
         try:
             log_api_call("IP Geolocation")
-            location_result = get_user_location()
+            location_result = get_user_location.invoke({})
             state.location_data = location_result
             state.add_message(
                 MessageType.LOCATION_UPDATE,
