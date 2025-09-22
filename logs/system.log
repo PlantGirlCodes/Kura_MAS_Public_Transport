@@ -143,3 +143,20 @@
 [2025-09-22 11:15:24] INFO: 📈 Request completed in 0.34s | Agents: 0 | API calls: 0 | Errors: 1
 [2025-09-22 11:15:24] ERROR: ❌ System error after 0.34 seconds: 'AddableValuesDict' object has no attribute 'final_directions'
 [2025-09-22 11:41:26] INFO: 📊 Processing: where am I?
+[2025-09-22 12:23:37] INFO: Test message
+[2025-09-22 12:23:37] SUCCESS: ✅ Test success
+[2025-09-22 12:23:37] ERROR: ❌ Test error
+[2025-09-22 12:23:37] INFO: 📊 Processing: test
+[2025-09-22 12:23:37] INFO: 📈 Request completed in 0.00s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 12:26:38] INFO: 📊 Processing: where am I?
+[2025-09-22 12:26:38] INFO: 🤖 Starting location_agent
+[2025-09-22 12:26:38] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 12:26:38] INFO: ✅ Completed location_agent
+[2025-09-22 12:26:38] INFO: 📈 Request completed in 0.34s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 12:26:38] SUCCESS: ✅ Request completed in 0.34 seconds
+[2025-09-22 12:28:46] INFO: 📊 Processing: directions to Times Square
+[2025-09-22 12:28:46] INFO: 🤖 Starting location_agent
+[2025-09-22 12:28:46] INFO: 🌐 API call to IP Geolocation
+[2025-09-22 12:28:46] INFO: ✅ Completed location_agent
+[2025-09-22 12:28:46] INFO: 📈 Request completed in 0.27s | Agents: 0 | API calls: 0 | Errors: 0
+[2025-09-22 12:28:46] SUCCESS: ✅ Request completed in 0.27 seconds
