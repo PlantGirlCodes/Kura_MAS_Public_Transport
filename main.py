@@ -20,7 +20,15 @@ from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolExecutor
 
 # Environment variables
-from dotenv import load_dotenv
+from dotenv import load_dotenv   
+def build_workflow(self) -> StateGraph:
+        """Build the LangGraph state machine"""
+        print("🔧 Building LangGraph workflow...")
+        
+        # Create the state graph using dict type for better compatibility
+        workflow = StateGraph(Dict)
+        
+        # Add all agent nodesdotenv
 load_dotenv()
 
 # Simple logging
@@ -56,26 +64,29 @@ class MessageType(Enum):
     ROUTE_CALCULATION = "route_calculation"
     FINAL_DIRECTIONS = "final_directions"
 
-@dataclass
-class AgentState:
-    """State that flows between agents"""
-    messages: List[Dict[str, Any]] = field(default_factory=list)
-    user_query: str = ""
-    location_data: Optional[Dict[str, Any]] = None
-    weather_data: Optional[Dict[str, Any]] = None
-    traffic_data: Optional[Dict[str, Any]] = None
-    route_options: Optional[List[Dict[str, Any]]] = None
-    final_directions: str = ""
-    error_count: int = 0
+def create_initial_state(user_query: str = "") -> Dict[str, Any]:
+    """Create a new state dictionary with default values"""
+    return {
+        "messages": [],
+        "user_query": user_query,
+        "location_data": {},
+        "weather_data": {},
+        "traffic_data": {},
+        "route_options": [],
+        "final_directions": "",
+        "error_count": 0
+    }
     
-    def add_message(self, msg_type: MessageType, content: str, agent: str):
-        """Helper to add messages to state"""
-        self.messages.append({
-            "type": msg_type.value,
-            "content": content,
-            "timestamp": datetime.now().isoformat(),
-            "agent": agent
-        })
+def add_message(state: Dict[str, Any], msg_type: MessageType, content: str, agent: str) -> None:
+    """Helper to add messages to state dictionary"""
+    if "messages" not in state:
+        state["messages"] = []
+    state["messages"].append({
+        "type": msg_type.value,
+        "content": content,
+        "timestamp": datetime.now().isoformat(),
+        "agent": agent
+    })
 
 # =============================================================================
 # TOOL FUNCTIONS (for agents to use)
@@ -238,12 +249,12 @@ class SupervisorAgent:
     def __init__(self):
         self.name = "supervisor"
     
-    def should_continue(self, state: AgentState) -> str:
+    def should_continue(self, state: Dict[str, Any]) -> str:
         """Determine which agent to run next"""
-        print(f"🎯 Supervisor: Evaluating state (errors: {state.error_count})")
+        print(f"🎯 Supervisor: Evaluating state (errors: {state.get('error_count', 0)})")
         
         # Too many errors - stop
-        if state.error_count >= 3:
+        if state.get('error_count', 0) >= 3:
             print("❌ Supervisor: Too many errors, ending workflow")
             return "end"
         
@@ -278,15 +289,16 @@ class LocationAgent:
         self.name = "location_agent"
         self.tools = [get_user_location]
 
-    def execute(self, state: AgentState) -> AgentState:
+    def execute(self, state: Dict[str, Any]) -> Dict[str, Any]:
         log_agent_start(self.name)
 
         try:
             log_api_call("IP Geolocation")
             tool = self.tools[0]  # get_user_location tool
-            location_result = tool("8.8.8.8")  # Call tool directly with argument
-            state.location_data = location_result
-            state.add_message(
+            location_result = tool.invoke({"ip_address": "8.8.8.8"})  # Call tool with .invoke()
+            state['location_data'] = location_result
+            create_agent_message(
+                state,
                 MessageType.LOCATION_UPDATE,
                 f"Location found: {location_result.get('city', 'Unknown')}, {location_result.get('region', 'Unknown')}",
                 self.name
@@ -307,10 +319,10 @@ class WeatherAgent:
         self.name = "weather_agent"
         self.tools = [get_weather_conditions]
     
-    def execute(self, state: AgentState) -> AgentState:
+    def execute(self, state: Dict[str, Any]) -> Dict[str, Any]:
         print("🌤️ Weather Agent: Checking weather conditions...")
         
-        if not state.location_data:
+        if not state.get("location_data"):
             state.error_count += 1
             state.add_message(MessageType.WEATHER_UPDATE, "No location data available", self.name)
             print("❌ Weather Agent: No location data")
@@ -319,7 +331,7 @@ class WeatherAgent:
         try:
             lat = state.location_data["latitude"]
             lon = state.location_data["longitude"]
-            weather_result = self.tools[0].invoke({"lat": lat, "lon": lon})
+            weather_result = self.tools[0].invoke({"lat": float(lat), "lon": float(lon)})
             state.weather_data = weather_result
             state.add_message(
                 MessageType.WEATHER_UPDATE,
@@ -342,11 +354,21 @@ class TrafficAgent:
         self.name = "traffic_agent"
         self.tools = [get_traffic_conditions]
     
-    def execute(self, state: AgentState) -> AgentState:
+    def execute(self, state: Dict[str, Any]) -> Dict[str, Any]:
         print("🚗 Traffic Agent: Analyzing traffic conditions...")
         
         try:
             # Parse origin and destination from query
+            # Handle location queries
+            if state.user_query.lower().strip() in ["where am i?", "where am i", "my location"]:
+                state.traffic_data = {"status": "location_query"}
+                state.add_message(
+                    MessageType.TRAFFIC_UPDATE,
+                    "Location query - no traffic data needed",
+                    self.name
+                )
+                return state
+
             origin, destination = self.parse_locations(state.user_query, state.location_data)
             print(f"🚗 Traffic Agent: From {origin} to {destination}")
             
@@ -400,12 +422,22 @@ class RouteAgent:
         self.name = "route_agent"
         self.tools = [calculate_route_options]
     
-    def execute(self, state: AgentState) -> AgentState:
+    def execute(self, state: Dict[str, Any]) -> Dict[str, Any]:
         print("🛣️ Route Agent: Calculating route options...")
         
         try:
             # Use same parsing as TrafficAgent
             traffic_agent = TrafficAgent()
+            # Handle location queries
+            if state.user_query.lower().strip() in ["where am i?", "where am i", "my location"]:
+                state.route_options = [{"status": "location_query"}]
+                state.add_message(
+                    MessageType.ROUTE_CALCULATION,
+                    "Location query - no route options needed",
+                    self.name
+                )
+                return state
+
             origin, destination = traffic_agent.parse_locations(state.user_query, state.location_data)
             
             route_options = self.tools[0].invoke({"origin": origin, "destination": destination})
@@ -435,13 +467,14 @@ class DirectionAgent:
     
     def __init__(self):
         self.name = "direction_agent"
-        # Using GPT-3.5-turbo for student budget
+        # Using GPT-3.5 for better cost management
         self.llm = ChatOpenAI(
             model="gpt-3.5-turbo",
             temperature=0.7,
             openai_api_key=os.getenv("OPENAI_API_KEY")
         )
         
+        # Define how we want the AI to respond
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", """You are a helpful directions assistant. Create clear, conversational 
             directions based on the user's request and available data. Consider weather conditions 
@@ -457,11 +490,41 @@ class DirectionAgent:
             """)
         ])
     
-    def execute(self, state: AgentState) -> AgentState:
+    def execute(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate the final directions based on all collected data"""
         print("🤖 Direction Agent: Generating personalized directions...")
         
+        # Handle location queries (like 'where am I?')
+        if state.user_query.lower().strip() in ["where am i?", "where am i", "my location"]:
+            if state.location_data:
+                # Create a simple location-based response
+                location_msg = [
+                    "📍 You are in:",
+                    f"City: {state.location_data.get('city', 'Unknown')}",
+                    f"Region: {state.location_data.get('region', 'Unknown')}",
+                    f"Country: {state.location_data.get('country', 'Unknown')}"
+                ]
+                
+                # Add weather information if available
+                if state.weather_data:
+                    location_msg.extend([
+                        "",
+                        "🌤️ Current weather:",
+                        f"Condition: {state.weather_data.get('condition', 'Unknown')}",
+                        f"Temperature: {state.weather_data.get('temperature', 'Unknown')}°C"
+                    ])
+                
+                # Set the final directions
+                state.final_directions = "\n".join(location_msg)
+                state.add_message(
+                    MessageType.FINAL_DIRECTIONS,
+                    "Location information generated",
+                    self.name
+                )
+                return state
+
         try:
-            # Prepare data for the LLM
+            # For regular direction queries, use the AI assistant
             context = {
                 "query": state.user_query,
                 "location": json.dumps(state.location_data or {}, indent=2),
@@ -470,11 +533,62 @@ class DirectionAgent:
                 "routes": json.dumps(state.route_options or [], indent=2)
             }
             
+            # Generate AI response
             chain = self.prompt | self.llm
             response = chain.invoke(context)
             
+            # Update state with AI generated directions
             state.final_directions = response.content
             state.add_message(
+                MessageType.FINAL_DIRECTIONS,
+                "AI-powered directions generated",
+                self.name
+            )
+            print("✅ Direction Agent: Directions created!")
+            
+        except Exception as e:
+            # Handle any errors gracefully
+            state.error_count += 1
+            print(f"❌ Direction Agent failed: {e}")
+            
+            # Use simpler fallback directions
+            state.final_directions = self.create_fallback_directions(state)
+            state.add_message(
+                MessageType.FINAL_DIRECTIONS,
+                f"Using fallback directions due to error: {str(e)}",
+                self.name
+            )
+        
+        return state
+        
+        # Handle location queries differently
+        if state.user_query.lower().strip() in ["where am i?", "where am i", "my location"]:
+            if state.location_data:
+                new_state.final_directions = f"📍 You are in {state.location_data.get('city', 'Unknown')}, {state.location_data.get('region', 'Unknown')}, {state.location_data.get('country', 'Unknown')}"
+                if state.weather_data:
+                    new_state.final_directions += f"\n🌤️ Current weather: {state.weather_data.get('condition', 'Unknown')}, {state.weather_data.get('temperature', 'Unknown')}°C"
+                new_state.add_message(
+                    MessageType.FINAL_DIRECTIONS,
+                    "Location information generated",
+                    self.name
+                )
+                return new_state
+        
+        try:
+            # Prepare data for the LLM
+            context = {
+                "query": new_state.user_query,
+                "location": json.dumps(new_state.location_data or {}, indent=2),
+                "weather": json.dumps(new_state.weather_data or {}, indent=2),
+                "traffic": json.dumps(new_state.traffic_data or {}, indent=2),
+                "routes": json.dumps(new_state.route_options or [], indent=2)
+            }
+            
+            chain = self.prompt | self.llm
+            response = chain.invoke(context)
+            
+            new_state.final_directions = response.content
+            new_state.add_message(
                 MessageType.FINAL_DIRECTIONS,
                 "AI-powered directions generated successfully",
                 self.name
@@ -482,12 +596,12 @@ class DirectionAgent:
             print("✅ Direction Agent: Directions created!")
             
         except Exception as e:
-            state.error_count += 1
+            new_state.error_count += 1
             print(f"❌ Direction Agent failed: {e}")
             
             # Fallback to basic directions
-            state.final_directions = self.create_fallback_directions(state)
-            state.add_message(
+            new_state.final_directions = self.create_fallback_directions(new_state)
+            new_state.add_message(
                 MessageType.FINAL_DIRECTIONS,
                 f"Fallback directions created (AI error: {str(e)})",
                 self.name
@@ -495,7 +609,7 @@ class DirectionAgent:
         
         return state
     
-    def create_fallback_directions(self, state: AgentState) -> str:
+    def create_fallback_directions(self, state: Dict[str, Any]) -> str:
         """Create basic directions when AI fails"""
         directions = f"Here are your directions for: {state.user_query}\n\n"
         
@@ -517,6 +631,17 @@ class DirectionAgent:
 # LANGGRAPH WORKFLOW SETUP
 # =============================================================================
 
+def create_agent_message(state: Dict[str, Any], msg_type: MessageType, content: str, agent: str) -> None:
+    """Helper to add messages to state dictionary"""
+    if "messages" not in state:
+        state["messages"] = []
+    state["messages"].append({
+        "type": msg_type.value,
+        "content": content,
+        "timestamp": datetime.now().isoformat(),
+        "agent": agent
+    })
+
 class MultiAgentDirectionSystem:
     """Main system that orchestrates all agents using LangGraph"""
     
@@ -536,8 +661,8 @@ class MultiAgentDirectionSystem:
         """Build the LangGraph state machine"""
         print("🔧 Building LangGraph workflow...")
         
-        # Create the state graph
-        workflow = StateGraph(AgentState)
+        # Create the state graph using dict type
+        workflow = StateGraph(Dict)
         
         # Add all agent nodes
         workflow.add_node("supervisor", self.supervisor_node)
@@ -573,7 +698,7 @@ class MultiAgentDirectionSystem:
         print("✅ LangGraph workflow built successfully")
         return compiled_workflow
     
-    def supervisor_node(self, state: AgentState) -> AgentState:
+    def supervisor_node(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """Supervisor node - just passes through state for decision making"""
         return state
     
@@ -583,8 +708,8 @@ class MultiAgentDirectionSystem:
         metrics = SimpleMetrics()
         metrics.start_request(user_query)
 
-        # Create initial state
-        initial_state = AgentState(user_query=user_query)
+        # Create initial state with explicit initialization of all fields
+        initial_state = create_initial_state(user_query)
         initial_state.add_message(MessageType.USER_REQUEST, user_query, "user")
 
         start_time = datetime.now()
@@ -602,15 +727,15 @@ class MultiAgentDirectionSystem:
             log_success(f"Request completed in {processing_time:.2f} seconds")
 
             return {
-                "directions": final_state.final_directions,
-                "location": final_state.location_data,
-                "weather": final_state.weather_data,
-                "traffic": final_state.traffic_data,
-                "route_options": final_state.route_options,
+                "directions": final_state.get('final_directions', ''),
+                "location": final_state.get('location_data', {}),
+                "weather": final_state.get('weather_data', {}),
+                "traffic": final_state.get('traffic_data', {}),
+                "route_options": final_state.get('route_options', []),
                 "processing_time": processing_time,
-                "messages_exchanged": len(final_state.messages),
-                "errors_encountered": final_state.error_count,
-                "conversation_log": final_state.messages
+                "messages_exchanged": len(final_state.get('messages', [])),
+                "errors_encountered": final_state.get('error_count', 0),
+                "conversation_log": final_state.get('messages', [])
             }
 
         except Exception as e:
